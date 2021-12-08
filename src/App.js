@@ -3,6 +3,7 @@ import './App.css';
 import { Router } from 'react-router';
 import { Menu } from 'semantic-ui-react';
 import e from 'express';
+import NotFound from './components/NotFound'
 
 function App() {
   return (
