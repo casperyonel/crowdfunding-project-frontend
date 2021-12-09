@@ -1,4 +1,7 @@
 import { Button, Input, Header, Table } from 'semantic-ui-react'
+import { web3 } from '../ethereum/web3'
+import { createContract } from './../ethereum/crowdfundingContract'
+import { web3 } from '../ethereum/web3'
 
 
 const Campaign = () => {
@@ -28,7 +31,7 @@ const Campaign = () => {
     }
 
     async componentDidMount() {
-        const currentCampaign = this.getCampaign(this.getCampaignAddress())
+        const currentCampaign = await this.getCampaign(this.getCampaignAddress())
         this.setState({
             campaign: currentCampaign
         })
@@ -38,14 +41,31 @@ const Campaign = () => {
         return this.props.match.params.address
     }
 
-    getCampaign(address) {
+    async getCampaign(address) {
+        const contract = createContract(address) 
+
+        const name = await contract.methods.name().call()
+        const targetAmount = await contract.methods.targetAmount().call()
+        const totalCollected = await contract.methods.totalCollected().call()
+        const beforeDeadline = await contract.methods.beforeDeadline().call()
+        const beneficiary = await contract.methods.beneficiary().call()
+        const fundingDeadline = await contract.methods.fundingDeadline().call()
+        const state = await contract.methods.state().call()
+        // Above is grabbing info from contract linked to other file, which is linked to web3 instance. 
+
+        var deadlineDate = new Date(0)
+        deadlineDate.setUTCSeconds(deadlineSeconds)
+
+        const accounts = await web3.eth.getAccounts`(`)
+
         return {
             name: 'Contract Name',
             targetAmount: 100,
             totalCollected: 50,
             campaignFinished: false, 
             deadline: new Date(),
-            isBeneficiary: true,
+            isBeneficiary: beneficiary.toLowerCase() === accounts[0].toLowerCase(),
+            // first account in the accounts array which is the ADDRESS of the METAMASK USER!
             state: this.ONGOING_STATE
         }
     }
@@ -164,8 +184,26 @@ const Campaign = () => {
         </div>
     }
 
-    onContribute(event) {
-        alert(`Contributing ${this.state.contributionAmount} to a contract`)
+    async onContribute(event) {
+       const accounts = await web3.eth.getAccounts() // get list of accounts using this method
+       const amount = web3.utils.toWei( // to get amount of funds a user can contribute. we're updating 
+       // this on line 182 just above by updating state whenever a user contributes
+           this.state.contributionAmount,
+           'ether'
+       )
+       // Below creates a web3 instance of a smart contract. Then we get list of accounts, amount they contribute, and so now 
+       // can send a transaction. 
+       const contract = createContract(this.getCampaignAddress())
+       await contract.methods.contribute().send({
+           from: accounts[0],
+           value: amount
+       })
+
+       // Below is updating the state of the smart contract so UI will withdraw the amount of funds that has contribued to this campaign
+       const campaign = this.state.campaign
+       campaign.totalCollected = Number.parseInt(campaign.totalCollected) + Number.parseInt(amount)
+
+       this.setState({ campaign: campaign })
     }
 }
 
