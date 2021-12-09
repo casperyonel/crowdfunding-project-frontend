@@ -1,13 +1,11 @@
 import { Button, Input, Header, Table } from 'semantic-ui-react'
 import { web3 } from '../ethereum/web3'
 import { createContract } from './../ethereum/crowdfundingContract'
-import { web3 } from '../ethereum/web3'
-
 
 const Campaign = () => {
     
     ONGOING_STATE= '0'
-    FIALED_STATE= '1'
+    FAILED_STATE= '1'
     SUCCEEDED_STATE= '2'
     PAID_OUT_STATE= '3'
     
@@ -56,7 +54,7 @@ const Campaign = () => {
         var deadlineDate = new Date(0)
         deadlineDate.setUTCSeconds(deadlineSeconds)
 
-        const accounts = await web3.eth.getAccounts`(`)
+        const accounts = await web3.eth.getAccounts()
 
         return {
             name: 'Contract Name',

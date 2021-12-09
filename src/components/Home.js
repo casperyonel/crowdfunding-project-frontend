@@ -14,9 +14,19 @@ const Home = () => {
         this.onSubmit = this.onSubmit.bind(this)
     }
 
+    onChange(event) {
+        this.setState({address: event.target.value})
+    }
+
+    onSubmit(event) {
+        event.preventDefault() 
+        this.props.history.push(`/campaigns/${this.state.address}`)
+        // PRETTY SURE THIS SHOULD BE /CAMPAIGN NOT CAMPAIGNS
+    }
+
     return (
         <div>
-            <Header as='h1'>Crowfunding Application</Header>
+            <Header as='h1'>Crowdfunding Application</Header>
 
             <Form>
                 <Form.input 
@@ -35,15 +45,7 @@ const Home = () => {
         </div>
     )
 
-    onChange(event) {
-        this.setState({address: event.target.value})
-    }
-
-    onSubmit(event) {
-        event.preventDefault() 
-        this.props.history.push(`/campaigns/${this.state.address}`)
-        // PRETTY SURE THIS SHOULD BE /CAMPAIGN NOT CAMPAIGNS
-    }
+    
 
 }
 

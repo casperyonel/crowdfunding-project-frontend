@@ -8,6 +8,12 @@ import Home from './components/Home';
 import Campaign from './components/Campaign';
 
 function App() {
+  
+  navigateToHome(e) {
+    e.preventDefault()
+    history.push('/')
+  }
+
   return (
      <Router history={history}>
        <Container>
@@ -28,10 +34,7 @@ function App() {
      </Router>
   );
 
-  navigateToHome(e) {
-    e.preventDefault()
-    history.push('/')
-  }
+
 }
 
 export default App;
