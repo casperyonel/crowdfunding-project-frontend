@@ -1,9 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-import { Router } from 'react-router';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Menu } from 'semantic-ui-react';
 import e from 'express';
 import NotFound from './components/NotFound'
+import Home from './components/Home';
+import Campaign from './components/Campaign';
 
 function App() {
   return (
@@ -16,11 +18,11 @@ function App() {
            />
          </Menu>
 
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/campaigns/:address" component={Campaign} />
-          <Route component={NotFound} />
-        </Switch>
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path="/campaigns/:address" element={<Campaign />} />
+          <Route element={<NotFound />} />
+        </Routes>
 
        </Container>
      </Router>
@@ -28,7 +30,7 @@ function App() {
 
   navigateToHome(e) {
     e.preventDefault()
-    history.pushState('/')
+    history.push('/')
   }
 }
 
